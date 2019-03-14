@@ -1,4 +1,4 @@
-
+// first, grab the data and remember to parse it
 var xhr = new XMLHttpRequest();
 xhr.onreadystatechange = function() {
   if (this.readyState === 4 && this.status === 200) {
@@ -10,8 +10,8 @@ xhr.send()
 
 function abc(borders) {
 
-	// important, feature ids must be integers
-	// also, i am adding a property to the feature called 'age' which is just some value between 0 and 100
+	// feature ids should be integers
+	// 'age' is just some value between 0 and 100, and will be used to style the map
 	for (var i = 0; i < borders.features.length; i++) {
 		borders.features[i].properties.id = borders.features[i].id;
 		borders.features[i].properties.age = Math.random()*100;
