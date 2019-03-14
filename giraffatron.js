@@ -5,7 +5,7 @@ xhr.onreadystatechange = function() {
 		abc(JSON.parse(this.responseText));
   }
 };
-xhr.open('GET', 'countries.geo.json?x=' + Math.random(), true);
+xhr.open('GET', 'countries.geojson?x=' + Math.random(), true);
 xhr.send()
 
 function abc(borders) {
