@@ -10,6 +10,25 @@ xhr.send()
 
 // im grabbing data from 2018gdpdata.js which contains an array called gdp and is an array of arrays
 
+var locations = {
+  'type': 'FeatureCollection',
+	// features is an array, and in this case there is only one element
+  'features': [
+    {
+      'type': 'Feature',
+      'geometry': {
+        'type': 'Point', // the geometry type of this element is a point
+        'coordinates': [-79.8711, 43.2557]
+      },
+      'properties': {
+        'city': 'Hamilton',
+        'state': 'Ontario',
+        'country': 'Canada' // we don't need to add a properties element to the 'features'
+      }
+    }
+  ]
+}
+
 function abc(borders) {
 
 	// feature ids should be integers
@@ -92,11 +111,35 @@ function abc(borders) {
 				}, 	
 				'fill-opacity': 0.35
 			}
-		});	
+		});
+
+		// add the data to your map as a layer 
+		map.addLayer({
+			id: 'Hamilton',
+			type: 'circle',
+		
+			// add a geojson source containing the data you want to incorporate
+			source: {
+				type: 'geojson',
+				data: locations
+			},
+			'layout': {
+				'visibility': 'none'
+			},
+			paint: {
+				'circle-radius': {
+				base: 7,
+				stops: [[4, 7.25], [12, 14]] // circles get bigger between z3 and z14
+				},
+			'circle-color': '#FF6EC7',
+			'circle-opacity': 0.6
+			}
+		});		
+		
 		
 	});
 
-	var toggleableLayerIds = [ 'nonsense', 'gdp' ];
+	var toggleableLayerIds = [ 'nonsense', 'gdp', 'Hamilton' ];
 	 
 	for (var i = 0; i < toggleableLayerIds.length; i++) {
 		var id = toggleableLayerIds[i];
@@ -144,7 +187,7 @@ function abc(borders) {
 
 			new mapboxgl.Popup()
 				.setLngLat([center[0], center[1]])  // how to get to the center of the country?
-				.setHTML('<h4>' + name + '</h4><p>AGE: ' + Math.floor(age*100)/100 + '</p>')
+				.setHTML('<h4>' + name + '</h4><p>ROLL: ' + Math.floor(age*100)/100 + '</p>')
 				.addTo(map);
 	
 		}
@@ -176,6 +219,21 @@ function abc(borders) {
 				.setHTML('<h4>' + name + '</h4><p>GDP: ' + x + '</p>')
 				.addTo(map);
 	
+		}
+	});
+	
+	map.on('click', 'Hamilton', function(e) {
+		if (e.features.length > 0) {
+			for (var i = 0; i < e.features.length; i++) {
+				var feature = e.features[i];
+				console.log(feature);
+				
+				new mapboxgl.Popup()
+					.setLngLat([-79.8711, 43.2557])  // how to get to the center of the country?
+					.setHTML('<h4>Woo.</h4><p>This is where I live.</p>')
+					.addTo(map);				
+				
+			}
 		}
 	});
 	
