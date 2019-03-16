@@ -16,6 +16,7 @@ var locations = {
   'features': [
     {
       'type': 'Feature',
+			'id': 1,
       'geometry': {
         'type': 'Point', // the geometry type of this element is a point
         'coordinates': [-79.8711, 43.2557]
@@ -132,9 +133,9 @@ function abc(borders) {
 				stops: [[4, 7.25], [12, 14]] // circles get bigger between z3 and z14
 				},
 			'circle-color': '#FF6EC7',
-			'circle-opacity': 0.6
+			'circle-opacity': ["case", ["boolean", ["feature-state", "click"], false], 0.8, 0.4]
 			}
-		});		
+		});
 		
 		
 	});
@@ -226,11 +227,19 @@ function abc(borders) {
 		if (e.features.length > 0) {
 			for (var i = 0; i < e.features.length; i++) {
 				var feature = e.features[i];
-				console.log(feature);
+				var x = map.getFeatureState({source: 'Hamilton', id: feature.id});
+				
+				if (x.click === true) {
+					
+					map.setFeatureState({source: 'Hamilton', id: feature.id}, { click: false});
+				} else {
+					
+          map.setFeatureState({source: 'Hamilton', id: feature.id}, { click: true});
+				}
 				
 				new mapboxgl.Popup()
 					.setLngLat([-79.8711, 43.2557])  // how to get to the center of the country?
-					.setHTML('<h4>Woo.</h4><p>This is where I live.</p>')
+					.setHTML('<h3>Woo.</h3><p>This is where I live.</p>')
 					.addTo(map);				
 				
 			}
