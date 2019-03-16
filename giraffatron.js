@@ -22,9 +22,17 @@ function abc(borders) {
 			if (borders.features[i].properties.id === gdp[j][0]) {
 				borders.features[i].properties.gdp = gdp[j][1];
 			}	
+		}
+		for (var j = 0; j < countries.length; j++) {
+			if (borders.features[i].properties.id === countries[j][0]) {
+				let coor = [];
+				coor.push(countries[j][1]);
+				coor.push(countries[j][2]);
+				borders.features[i].properties.center = coor;
+			}	
 		}	
 		borders.features[i].id = i + 1;
-		console.log(borders.features[i]);
+		//console.log(borders.features[i]);
 	}
 
 	// display the map
@@ -120,5 +128,55 @@ function abc(borders) {
 		var layers = document.getElementById('menu');
 		layers.appendChild(a);
 	}
+	
+	// maybe i have to do this for each layer?
+	
+	map.on('click', 'nonsense', function(e) {
+		var arr = e.features;
+		for (var i = 0; i < arr.length; i++) {
+			var feature = arr[i];
+			console.log(feature);
+			
+			var name = feature.properties.name;
+			var age = feature.properties.age;
+			let center = JSON.parse(feature.properties.center);  // if i dont do this, js thinks center is a string!!
+			console.log(center);
+
+			new mapboxgl.Popup()
+				.setLngLat([center[0], center[1]])  // how to get to the center of the country?
+				.setHTML('<h4>' + name + '</h4><p>AGE: ' + Math.floor(age*100)/100 + '</p>')
+				.addTo(map);
+	
+		}
+	});
+	
+	map.on('click', 'gdp', function(e) {
+		var arr = e.features;
+		for (var i = 0; i < arr.length; i++) {
+			var feature = arr[i];
+			//console.log(feature);
+			
+			var name = feature.properties.name;
+			var gdp = feature.properties.gdp;
+			console.log(gdp);
+			var x = '';
+			if (gdp > 1000000) {
+				x = Math.floor((gdp/1000000)*100)/100 + ' trillion';
+			} else if (gdp > 10000) {
+				x = Math.floor((gdp/1000)) + ' billion';
+			} else {
+				x = Math.floor((gdp/1000)*10)/10 + ' billion';
+			}
+			
+			let center = JSON.parse(feature.properties.center);  // if i dont do this, js thinks center is a string!!
+			//console.log(center);
+
+			new mapboxgl.Popup()
+				.setLngLat([center[0], center[1]])  // how to get to the center of the country?
+				.setHTML('<h4>' + name + '</h4><p>GDP: ' + x + '</p>')
+				.addTo(map);
+	
+		}
+	});
 	
 }
