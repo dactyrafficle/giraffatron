@@ -114,7 +114,7 @@ function abc(borders) {
 			}
 		});
 
-		// add the data to your map as a layer 
+		// Hamilton 
 		map.addLayer({
 			id: 'Hamilton',
 			type: 'circle',
@@ -223,27 +223,33 @@ function abc(borders) {
 		}
 	});
 	
-	map.on('click', 'Hamilton', function(e) {
+	var popup = new mapboxgl.Popup({
+		closeButton: false,
+		closeOnClick: false
+	});
+	
+	map.on('mouseenter', 'Hamilton', function(e) {
 		if (e.features.length > 0) {
 			for (var i = 0; i < e.features.length; i++) {
 				var feature = e.features[i];
 				var x = map.getFeatureState({source: 'Hamilton', id: feature.id});
 				
 				if (x.click === true) {
-					
 					map.setFeatureState({source: 'Hamilton', id: feature.id}, { click: false});
 				} else {
-					
           map.setFeatureState({source: 'Hamilton', id: feature.id}, { click: true});
 				}
 				
-				new mapboxgl.Popup()
-					.setLngLat([-79.8711, 43.2557])  // how to get to the center of the country?
+				popup.setLngLat([-79.8711, 43.2557])  // how to get to the center of the country?
 					.setHTML('<h3>Woo.</h3><p>This is where I live.</p>')
-					.addTo(map);				
-				
+					.addTo(map);					
 			}
 		}
+	});
+	
+	map.on('mouseleave', 'Hamilton', function() {
+		map.getCanvas().style.cursor = '';
+		popup.remove();
 	});
 	
 }
