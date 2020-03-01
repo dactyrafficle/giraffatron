@@ -5,19 +5,31 @@ let geojson = fetch('countries.geojson?x=' + Math.random()).then(r => r.json());
 // FETCH GDP DATA
 let gdp_2019 = fetch('gdp_2019.json?x=' + Math.random()).then(r => r.json());
 
+// FETCH GDP DATA
+let region3 = fetch('region3.json?x=' + Math.random()).then(r => r.json());
+
 // LISTEN FOR ALL THE DATA TO BE FETCHED
-Promise.all([geojson, gdp_2019]).then(r => {
+Promise.all([geojson, gdp_2019, region3]).then(r => {
 
   let geojson = r[0];
   let gdp_2019 = r[1];
+  let region3 = r[2];
+  
+  let str = '';
+  
+  for (let i = 0; i < geojson.features.length; i++) {
+    str += geojson.features[i].properties.NAME + ',' + geojson.features[i].properties.ADM0_A3 + ',' + geojson.features[i].properties.ISO_A3 +'\n';
+  }
+  console.log(str);
   
   // NOW THAT WE HAVE ALL THE DATA, LETS MODIFY THE GEOJSON
   for (var i = 0; i < geojson.features.length; i++) {
     for (var j = 0; j < gdp_2019.data.length; j++) {
-      if (geojson.features[i].id === gdp_2019.data[j].id) {
-        geojson.features[i].properties.id = gdp_2019.data[i].id;
-        geojson.features[i].properties.gdp = gdp_2019.data[i].gdp;
-        geojson.features[i].properties.region3 = 2;
+      if (geojson.features[i].properties.ADM0_A3 === gdp_2019.data[j].id) {
+        
+        geojson.features[i].properties.id = gdp_2019.data[j].id;
+        geojson.features[i].properties.gdp = gdp_2019.data[j].val;
+        geojson.features[i].properties.r3 = region3.data[j].val + Math.random()*0.5-0.25;
       }
     }
   }
@@ -47,7 +59,7 @@ Promise.all([geojson, gdp_2019]).then(r => {
         data: r
       },
       layout: {
-        'visibility': 'visible'  // VISIBILITY
+        'visibility': 'none'  // VISIBILITY
       },
       paint: {
         'fill-color': {
@@ -71,15 +83,22 @@ Promise.all([geojson, gdp_2019]).then(r => {
 				data: r
 			},
 			layout: {
-				'visibility': 'none' // VISIBILITY
+				'visibility': 'visible' // VISIBILITY
 			},
 			paint: {
 				'fill-color': {
-					"property": "region3", // this color scheme is based on the age property
+					"property": "MAP_COLOR", // this color scheme is based on the age property
 					"stops": [
-						[0, 'blue'],
-						[50, 'green'],
-						[100, 'orange']
+            [0, 'orange'],
+            [10, 'green']
+            /*
+            [0, 'rgba(0, 0, 0, 0)'],
+						[1, 'rgba(120, 255, 120, 255)'],
+            [2, 'rgba(255, 200, 255, 255)'],
+            [3, 'rgba(255, 200, 0, 255)'],
+            [4, 'rgba(120, 120, 255, 255)'],
+						[6, 'rgba(255, 120, 120, 255)']
+            */
 					]
 				}, 	
 				'fill-opacity': 0.35
