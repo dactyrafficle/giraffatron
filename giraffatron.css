@@ -5,38 +5,34 @@
 	left: 0;
 	width: 100%;
 }
-/* this almost exactly from here: https://docs.mapbox.com/mapbox-gl-js/example/toggle-layers/ */
-#menu {
-	background: white;
-	position: absolute;
-	z-index: 1;
-	top: 10px;
-	left: 10px;
-	border-radius: 5px;
-	border: 2px solid #ccc;
-	font-family: 'calibri', sans-serif;
+/* the hamburger icon */
+.hamburger-container {
+  position: absolute;
+  display: inline-block;
+  z-index: 1;
 }
-#menu a {
-	font-size: 14px;
-	color: #333;
-	display: block;
-	margin: 0;
-	padding: 10px;
-	text-decoration: none;
-	border-bottom: 1px solid #ccc;
-	text-align: center;
+.hamburger-container:hover {
+  cursor: pointer;
 }
-#menu a:last-child {
-	border: none;
+.hamburger-contents {
+  z-index: 1;
+  width: 35px;
+  height: 5px;
+  margin: 6px 0;
+  border-radius: 5px;
+  background-color: rgba(255,110,199);
 }
-#menu a:hover {
-  background: #fc5;
-	color: #222;
-}
-#menu a.active {
-	background-color: #fc7;
-	color: #222;
-}
-#menu a.active:hover {
-  background: #fc5;
+
+/* the modal and its contents */
+.modal {
+  position: absolute;
+  z-index: 0;
+  background-color: rgba(50, 50, 50, 1);
+  border: 1px solid #dddddd;
+  position: absolute;
+  top: 50px;
+  width: 300px;
+  padding: 10px;
+  overflow: hidden;
+  display: none;
 }

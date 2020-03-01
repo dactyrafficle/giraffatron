@@ -12,13 +12,38 @@
 </head>
 <body>
 
-<div id='menu'></div>
-<div id='map' class='map'></div>
+
+  <div id='map' class='map'></div>
+
+  <div class='hamburger-container' id='hamburger-container'>
+    <div class='hamburger-contents'></div>
+    <div class='hamburger-contents'></div>
+    <div class='hamburger-contents'></div>
+  </div>
+
+  <div id='modal' class='modal'>
+    <h4> You can <span class='pink'>upload</span> a csv file.</h4>
+    <input type='file' id='myInput' multiple></input><br><br>
+    <button id='gdp'> gdp </button>
+    <button id='removeLayers'>remove layers</button>
+  </div>
 
 </body>
 
 <script src='giraffatron.js'></script>
 
-<script></script>
+<script>
+
+var modal = document.getElementById('modal');
+document.getElementById('hamburger-container').addEventListener('click', function() {
+	if (modal.style.display === 'block') {
+		modal.style.display = 'none';
+	} else {
+		modal.style.display = 'block';
+	}
+});
+
+
+</script>
 
 </html>

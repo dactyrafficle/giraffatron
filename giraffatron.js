@@ -15,13 +15,6 @@ Promise.all([geojson, gdp_2019, region3]).then(r => {
   let gdp_2019 = r[1];
   let region3 = r[2];
   
-  let str = '';
-  
-  for (let i = 0; i < geojson.features.length; i++) {
-    str += geojson.features[i].properties.NAME + ',' + geojson.features[i].properties.ADM0_A3 + ',' + geojson.features[i].properties.ISO_A3 +'\n';
-  }
-  console.log(str);
-  
   // NOW THAT WE HAVE ALL THE DATA, LETS MODIFY THE GEOJSON
   for (var i = 0; i < geojson.features.length; i++) {
     for (var j = 0; j < gdp_2019.data.length; j++) {
@@ -75,42 +68,59 @@ Promise.all([geojson, gdp_2019, region3]).then(r => {
     });
     
     // regions 3: geographic region
-		map.addLayer({
-			id: 'region3',
-			type: 'fill',
-			source: {
-				type: 'geojson',
-				data: r
-			},
-			layout: {
-				'visibility': 'visible' // VISIBILITY
-			},
-			paint: {
-				'fill-color': {
-					"property": "MAP_COLOR", // this color scheme is based on the age property
-					"stops": [
-            [0, 'orange'],
-            [10, 'green']
-            /*
+    map.addLayer({
+      id: 'region3',
+      type: 'fill',
+      source: {
+        type: 'geojson',
+        data: r
+      },
+      layout: {
+        'visibility': 'visible' // VISIBILITY
+      },
+      paint: {
+        'fill-color': {
+          "property": "r3", // this color scheme is based on the age property
+          "stops": [
             [0, 'rgba(0, 0, 0, 0)'],
-						[1, 'rgba(120, 255, 120, 255)'],
+            [1, 'rgba(120, 255, 120, 255)'],
             [2, 'rgba(255, 200, 255, 255)'],
             [3, 'rgba(255, 200, 0, 255)'],
             [4, 'rgba(120, 120, 255, 255)'],
-						[6, 'rgba(255, 120, 120, 255)']
-            */
-					]
-				}, 	
-				'fill-opacity': 0.35
-			}
-		});	
-  
+            [6, 'rgba(255, 120, 120, 255)']
+          ]
+        }, 	
+      'fill-opacity': 0.35
+      }
+    });	
   
   });
   
+  
+  
+  let removeLayersButton = document.getElementById('removeLayers');
+  removeLayers.addEventListener('click', function() {
+    
+    // get all layers
+    let layers = ['gdp', 'region3'];
+
+    for (let i = 0; i < layers.length; i++) {
+      let visibility = map.getLayoutProperty(layers[i], 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(layers[i], 'visibility', 'none');
+      }
+    }
+  });
+  
+   
 });
   
 
+
+
+
+
+/*
 
 
 // im grabbing data from 2018gdpdata.js which contains an array called gdp and is an array of arrays
@@ -133,27 +143,6 @@ var locations = {
     }
   ]
 }
-
-function abc(borders) {
-
-	// feature ids should be integers
-	// 'age' is just some value between 0 and 100, and will be used to style the map
-  
-	for (var i = 0; i < borders.features.length; i++) {
-		borders.features[i].properties.id = borders.features[i].id;
-		borders.features[i].properties.age = Math.random()*100;
-		
-		for (var j = 0; j < countries.length; j++) {
-			if (borders.features[i].properties.id === countries[j][0]) {
-				let coor = [];
-				coor.push(countries[j][1]);
-				coor.push(countries[j][2]);
-				borders.features[i].properties.center = coor;
-			}	
-		}	
-		borders.features[i].id = i + 1;
-		//console.log(borders.features[i]);
-	}
 
 
 
@@ -233,39 +222,9 @@ function abc(borders) {
 		});
 		
 		
-	});
 
-	var toggleableLayerIds = [ 'nonsense', 'gdp', 'Hamilton' ];
-	 
-	for (var i = 0; i < toggleableLayerIds.length; i++) {
-		var id = toggleableLayerIds[i];
-		var a = document.createElement('a');
-		a.href = '#';
-		// i only want the first button to be active when the map loads to mirror the first layer which is visible
-		if (i === 0) {
-			a.className = 'active';
-		}
-		a.textContent = id;
-		 
-		a.addEventListener('click', function(e) {
-			var clickedLayer = this.textContent;
-			e.preventDefault();
-			e.stopPropagation();
-		 
-			var visibility = map.getLayoutProperty(clickedLayer, 'visibility');
-		 
-			// this is good because it leaves open the possibility of multiple layers being visible at the same time
-			if (visibility === 'visible') {
-				map.setLayoutProperty(clickedLayer, 'visibility', 'none');
-				this.className = '';
-			} else {
-				this.className = 'active';
-				map.setLayoutProperty(clickedLayer, 'visibility', 'visible');
-			}
-		});
-		 
-		var layers = document.getElementById('menu');
-		layers.appendChild(a);
+
+
 	}
 	
 	// maybe i have to do this for each layer?
@@ -348,3 +307,5 @@ function abc(borders) {
 	});
 	
 }
+
+*/
