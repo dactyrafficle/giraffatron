@@ -31,8 +31,14 @@
   border: 1px solid #dddddd;
   position: absolute;
   top: 50px;
-  width: 300px;
+  /* width: 300px; */
   padding: 10px;
   overflow: hidden;
   display: none;
+  font-family: "Trebuchet MS"
+}
+
+.modal .btn:hover {
+  cursor: pointer;
+  background: #aaa;
 }

@@ -3,25 +3,31 @@
 let geojson = fetch('countries.geojson?x=' + Math.random()).then(r => r.json());
 
 // FETCH GDP DATA
-let gdp_2019 = fetch('gdp_2019.json?x=' + Math.random()).then(r => r.json());
+let gdp2019 = fetch('gdp_2019.json?x=' + Math.random()).then(r => r.json());
 
-// FETCH GDP DATA
+// FETCH REGION DATA
+let region1 = fetch('region1.json?x=' + Math.random()).then(r => r.json());
+let region2 = fetch('region2.json?x=' + Math.random()).then(r => r.json());
 let region3 = fetch('region3.json?x=' + Math.random()).then(r => r.json());
 
 // LISTEN FOR ALL THE DATA TO BE FETCHED
-Promise.all([geojson, gdp_2019, region3]).then(r => {
+Promise.all([geojson, gdp2019, region1, region2, region3]).then(r => {
 
   let geojson = r[0];
-  let gdp_2019 = r[1];
-  let region3 = r[2];
+  let gdp2019 = r[1];
+  let region1 = r[2];
+  let region2 = r[3];
+  let region3 = r[4];
   
   // NOW THAT WE HAVE ALL THE DATA, LETS MODIFY THE GEOJSON
   for (var i = 0; i < geojson.features.length; i++) {
-    for (var j = 0; j < gdp_2019.data.length; j++) {
-      if (geojson.features[i].properties.ADM0_A3 === gdp_2019.data[j].id) {
+    for (var j = 0; j < gdp2019.data.length; j++) {
+      if (geojson.features[i].properties.ADM0_A3 === gdp2019.data[j].id) {
         
-        geojson.features[i].properties.id = gdp_2019.data[j].id;
-        geojson.features[i].properties.gdp = gdp_2019.data[j].val;
+        geojson.features[i].properties.id = gdp2019.data[j].id;
+        geojson.features[i].properties.gdp = gdp2019.data[j].val;
+        geojson.features[i].properties.r1 = region1.data[j].val + Math.random()*0.5-0.25;
+        geojson.features[i].properties.r2 = region2.data[j].val + Math.random()*0.5-0.25;
         geojson.features[i].properties.r3 = region3.data[j].val + Math.random()*0.5-0.25;
       }
     }
@@ -30,6 +36,7 @@ Promise.all([geojson, gdp_2019, region3]).then(r => {
   
 }).then((r) => {
   
+  // r is the geojson object with all the mods weve made
   console.log(r);
 
   // DISPLAY THE MAP
@@ -45,7 +52,7 @@ Promise.all([geojson, gdp_2019, region3]).then(r => {
   
     // gdp
     map.addLayer({
-      id: 'gdp',
+      id: 'gdp2019',
       type: 'fill',
       source: {
         type: 'geojson',
@@ -67,6 +74,62 @@ Promise.all([geojson, gdp_2019, region3]).then(r => {
       }
     });
     
+    // region1: continent
+    map.addLayer({
+      id: 'region1',
+      type: 'fill',
+      source: {
+        type: 'geojson',
+        data: r
+      },
+      layout: {
+        'visibility': 'visible' // VISIBILITY
+      },
+      paint: {
+        'fill-color': {
+          "property": "r1", // this color scheme is based on the age property
+          "stops": [
+            [0, 'rgba(0, 0, 0, 0)'],
+            [1000, 'rgba(120, 255, 120, 255)'],
+            [2000, 'rgba(255, 200, 255, 255)'],
+            [3000, 'rgba(255, 200, 0, 255)'],
+            [4000, 'rgba(120, 120, 255, 255)'],
+            [6000, 'rgba(255, 120, 120, 255)'],
+            [7000, 'rgba(255, 200, 0, 255)']
+          ]
+        }, 	
+      'fill-opacity': 0.35
+      }
+    });
+    
+    // region2: not sure yet
+    map.addLayer({
+      id: 'region2',
+      type: 'fill',
+      source: {
+        type: 'geojson',
+        data: r
+      },
+      layout: {
+        'visibility': 'visible' // VISIBILITY
+      },
+      paint: {
+        'fill-color': {
+          "property": "r2", // this color scheme is based on the age property
+          "stops": [
+            [0, 'rgba(0, 0, 0, 0)'],
+            [1000, 'rgba(120, 255, 120, 255)'],
+            [2000, 'rgba(255, 200, 255, 255)'],
+            [3000, 'rgba(255, 200, 0, 255)'],
+            [4000, 'rgba(120, 120, 255, 255)'],
+            [6000, 'rgba(255, 120, 120, 255)'],
+            [7000, 'rgba(255, 200, 0, 255)']
+          ]
+        }, 	
+      'fill-opacity': 0.35
+      }
+    });	
+    
     // regions 3: geographic region
     map.addLayer({
       id: 'region3',
@@ -87,7 +150,8 @@ Promise.all([geojson, gdp_2019, region3]).then(r => {
             [2, 'rgba(255, 200, 255, 255)'],
             [3, 'rgba(255, 200, 0, 255)'],
             [4, 'rgba(120, 120, 255, 255)'],
-            [6, 'rgba(255, 120, 120, 255)']
+            [6, 'rgba(255, 120, 120, 255)'],
+            [7, 'rgba(255, 200, 0, 255)']
           ]
         }, 	
       'fill-opacity': 0.35
@@ -102,7 +166,7 @@ Promise.all([geojson, gdp_2019, region3]).then(r => {
   removeLayers.addEventListener('click', function() {
     
     // get all layers
-    let layers = ['gdp', 'region3'];
+    let layers = ['gdp2019', 'region1', 'region2', 'region3'];
 
     for (let i = 0; i < layers.length; i++) {
       let visibility = map.getLayoutProperty(layers[i], 'visibility');
@@ -111,7 +175,27 @@ Promise.all([geojson, gdp_2019, region3]).then(r => {
       }
     }
   });
-  
+ 
+  let layerIdArray = document.getElementsByClassName('layerId');
+  for (let i = 0; i < layerIdArray.length; i++) {
+    let layerIdEl = layerIdArray[i];
+    
+    console.log(layerIdEl);
+    
+    layerIdEl.addEventListener('click', function() {
+    
+      let layerId = layerIdEl.id;
+      let visibility = map.getLayoutProperty(layerId, 'visibility');
+      if (visibility === 'visible') {
+        map.setLayoutProperty(layerId, 'visibility', 'none');
+      } else {
+        map.setLayoutProperty(layerId, 'visibility', 'visible');
+      }
+      
+    });
+    
+  }
+
    
 });
   
