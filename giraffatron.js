@@ -21,13 +21,14 @@ Promise.all([geojson, gdp2019, region1, region2, region3]).then(r => {
   
   // NOW THAT WE HAVE ALL THE DATA, LETS MODIFY THE GEOJSON
   for (var i = 0; i < geojson.features.length; i++) {
-    for (var j = 0; j < gdp2019.data.length; j++) {
+    for (var j = 0; j < gdp2019.data.length; j++) { //or ADM0_A3
+      //console.log(geojson.features[i].properties.ISO_A3);
       if (geojson.features[i].properties.ADM0_A3 === gdp2019.data[j].id) {
         
         geojson.features[i].properties.id = gdp2019.data[j].id;
         geojson.features[i].properties.gdp = gdp2019.data[j].val;
-        geojson.features[i].properties.r1 = region1.data[j].val + Math.random()*0.5-0.25;
-        geojson.features[i].properties.r2 = region2.data[j].val + Math.random()*0.5-0.25;
+        geojson.features[i].properties.r1 = region1.data[j].val + Math.random()*100-50;
+        geojson.features[i].properties.r2 = region2.data[j].val + Math.random()*100-50;
         geojson.features[i].properties.r3 = region3.data[j].val + Math.random()*0.5-0.25;
       }
     }
@@ -91,11 +92,12 @@ Promise.all([geojson, gdp2019, region1, region2, region3]).then(r => {
           "stops": [
             [0, 'rgba(0, 0, 0, 0)'],
             [1000, 'rgba(120, 255, 120, 255)'],
-            [2000, 'rgba(255, 200, 255, 255)'],
+            [2000, 'rgba(255, 170, 255, 255)'],
             [3000, 'rgba(255, 200, 0, 255)'],
-            [4000, 'rgba(120, 120, 255, 255)'],
-            [6000, 'rgba(255, 120, 120, 255)'],
-            [7000, 'rgba(255, 200, 0, 255)']
+            [4000, 'rgba(255, 120, 120, 255)'],
+            [5000, 'rgba(120, 120, 255, 255)'],
+            [6000, 'rgba(255, 255, 120, 255)'],
+            [7000, 'rgba(51, 51, 51, 255)']
           ]
         }, 	
       'fill-opacity': 0.35
@@ -111,7 +113,7 @@ Promise.all([geojson, gdp2019, region1, region2, region3]).then(r => {
         data: r
       },
       layout: {
-        'visibility': 'visible' // VISIBILITY
+        'visibility': 'none' // VISIBILITY
       },
       paint: {
         'fill-color': {
@@ -139,7 +141,7 @@ Promise.all([geojson, gdp2019, region1, region2, region3]).then(r => {
         data: r
       },
       layout: {
-        'visibility': 'visible' // VISIBILITY
+        'visibility': 'none' // VISIBILITY
       },
       paint: {
         'fill-color': {
