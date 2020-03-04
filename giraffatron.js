@@ -28,7 +28,10 @@ let geojson = fetch('countries.geojson?x=' + Math.random()).then(r => r.json()).
 let gdp2019 = fetch('gdp_2019.json?x=' + Math.random()).then(r => r.json());
 
 // FETCH REGION DATA
-let region1 = fetch('region1.json?x=' + Math.random()).then(r => r.json());
+let region1 = fetch('region1.json?x=' + Math.random()).then(r => r.json()).then(d => {
+  console.log(d);
+  return d;
+});
 let region2 = fetch('region2.json?x=' + Math.random()).then(r => r.json());
 let region3 = fetch('region3.json?x=' + Math.random()).then(r => r.json());
 
