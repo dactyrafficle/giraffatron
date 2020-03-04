@@ -1,6 +1,28 @@
 
+// DEFINE A FEATURE AS AN OBJECT/CLASS SO I CAN ADD FEATURES TO THE DATA MORE EASILY
+function Feature(id, ADM0_A3, ISO_A3, geometry_type, coor) {
+  this.type = 'Feature';
+  this.id = id;
+  this.properties = {
+    'ADM0_A3': ADM0_A3,
+    'ISO_A3': ISO_A3
+  };
+  this.geometry = {
+    'type': geometry_type,
+    'coordinates': coor
+  };
+}
+
 // FETCH THE GEOGRAPHIC COORDINATED WHICH MAKE UP EACH COUNTRYS BORDERS
-let geojson = fetch('countries.geojson?x=' + Math.random()).then(r => r.json());
+let geojson = fetch('countries.geojson?x=' + Math.random()).then(r => r.json()).then(d => {
+  
+  // REMOVE FRENCH GUYANA FROM FRANCE AND ADD IT AS ITS OWN FEATURE
+  let GUF = d.features[72].geometry.coordinates.splice(2,1);
+  console.log(GUF);
+  d.features.push(new Feature(242, 'GUF', 'GUF', 'Polygon', GUF[0]));
+  
+  return d;
+});
 
 // FETCH GDP DATA
 let gdp2019 = fetch('gdp_2019.json?x=' + Math.random()).then(r => r.json());
@@ -10,7 +32,7 @@ let region1 = fetch('region1.json?x=' + Math.random()).then(r => r.json());
 let region2 = fetch('region2.json?x=' + Math.random()).then(r => r.json());
 let region3 = fetch('region3.json?x=' + Math.random()).then(r => r.json());
 
-// LISTEN FOR ALL THE DATA TO BE FETCHED
+// WAIT FOR EACH PROMISE TO BE RESOLVED
 Promise.all([geojson, gdp2019, region1, region2, region3]).then(r => {
 
   let geojson = r[0];
@@ -27,7 +49,7 @@ Promise.all([geojson, gdp2019, region1, region2, region3]).then(r => {
         
         geojson.features[i].properties.id = gdp2019.data[j].id;
         geojson.features[i].properties.gdp = gdp2019.data[j].val;
-        geojson.features[i].properties.r1 = region1.data[j].val + Math.random()*100-50;
+        geojson.features[i].properties.r1 = region1.data[j].val + Math.random()*300-150;
         geojson.features[i].properties.r2 = region2.data[j].val + Math.random()*100-50;
         geojson.features[i].properties.r3 = region3.data[j].val + Math.random()*0.5-0.25;
       }
